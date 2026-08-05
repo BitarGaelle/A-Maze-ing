@@ -25,7 +25,7 @@ class MazeGenerator:
         if dir == 4:
             return (1) 
 
-    def get_neighbors(self, coord: tuple[int, int, int]) -> list[tuple[int, int, int]]:
+    def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int, int]]:
         x, y = coord
         valid: list[tuple[int, int, int]] = []
         neighbors: list[tuple[int, int, int]] = []
@@ -44,7 +44,7 @@ class MazeGenerator:
     def dfs(self, coord: tuple[int, int], visited: list[list[bool]]) -> None:
         cur_x, cur_y = coord
         visited[cur_x][cur_y] = True
-
+        random.seed(self.seed)
         neighbors = self.get_neighbors(coord)
 
         random.shuffle(neighbors)
@@ -55,13 +55,38 @@ class MazeGenerator:
                 self.grid[cur_x][cur_y] = self.grid[cur_x][cur_y] - direction
                 self.grid[neig_x][neig_y] = self.grid[neig_x][neig_y] - self.get_oposite(direction)
                 self.dfs((neig_x, neig_y), visited)
+
+    def add_logo_to_visited(self, visited: list[list[bool]]) -> None:
+        logo_wid: int = 7
+        logo_heigh: int = 5
+
+        start_x: int = (self.height - logo_heigh) // 2
+        start_y: int = (self.width - logo_wid) // 2
+        for i in range(logo_heigh):
+            for j in range(logo_wid):
+                visited[start_x + i][start_y + j] = True
                        
     def generate(self) -> None:
-        visited = [[False for _ in range(self.width)] for _ in range(self.height)]
+        visited: list[list[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
 
+        self.add_logo_to_visited(visited)
         self.dfs(self.entry, visited)
 
     def draw(self) -> None:
+        logo = [
+            [1,0,1,0,1,1,1],
+            [1,0,1,0,0,0,1],
+            [1,1,1,0,1,1,1],
+            [0,0,1,0,1,0,0],
+            [0,0,1,0,1,1,1]
+        ]
+
+        logo_height = len(logo)
+        logo_width = len(logo[0])
+
+        start_x = (self.height - logo_height) // 2
+        start_y = (self.width - logo_width) // 2
+
         print("+" + "---+" * self.width)
 
         for x in range(self.height):
@@ -71,33 +96,55 @@ class MazeGenerator:
             for y in range(self.width):
                 cell = self.grid[x][y]
 
-                # cell content
+                logo_x = x - start_x
+                logo_y = y - start_y
+
+                is_logo = (
+                    logo_x >= 0 and logo_x < logo_height and
+                    logo_y >= 0 and logo_y < logo_width
+                )
+
+                # content
                 if (x, y) == self.entry:
                     content = " S "
+
                 elif (x, y) == self.exit:
                     content = " E "
+
+                elif is_logo == True and logo[logo_x][logo_y] == 1:
+                    content = " █ "
+
+                elif is_logo == True and logo[logo_x][logo_y] == 0:
+                    content = "   "
+
                 else:
                     content = "   "
 
                 row_top += content
 
                 # East wall
-                if cell & 2:
+                if is_logo == True:
+                    if logo_y == logo_width - 1:
+                        row_top += "|"
+                    else:
+                        row_top += " "
+
+                elif cell & 2:
                     row_top += "|"
+
                 else:
                     row_top += " "
 
                 # South wall
-                if cell & 4:
+                if is_logo == True:
+                    row_bottom += "...+"
+
+                elif cell & 4:
                     row_bottom += "---+"
+
                 else:
                     row_bottom += "   +"
 
             print(row_top)
             print(row_bottom)
-
-
-
-        
-
 
