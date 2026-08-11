@@ -12,6 +12,7 @@ class MazeSolver:
         self.width = maze.width
 
     def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int, str]]:
+        """this is a docstring"""
         x, y = coord
         valid: list[tuple[int, int, str]] = []
         neighbors: list[tuple[int, int, str]] = []
@@ -41,7 +42,7 @@ class MazeSolver:
         self.maze.add_logo_to_visited(self.visited)
 
         while self.queue:
-            cur: tuple[int, int] = self.queue.pop()
+            cur: tuple[int, int] = self.queue.pop(0)
             if cur == self.exit:
                 path: list[str] = []
                 while cur in self.parent.keys():

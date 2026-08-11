@@ -44,7 +44,6 @@ class MazeGenerator:
     def dfs(self, coord: tuple[int, int], visited: list[list[bool]]) -> None:
         cur_x, cur_y = coord
         visited[cur_x][cur_y] = True
-        random.seed(self.seed)
         neighbors = self.get_neighbors(coord)
 
         random.shuffle(neighbors)
@@ -70,6 +69,7 @@ class MazeGenerator:
         visited: list[list[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
 
         self.add_logo_to_visited(visited)
+        random.seed(self.seed)
         self.dfs(self.entry, visited)
 
     def draw(self, solution_path: list[str]) -> None:
