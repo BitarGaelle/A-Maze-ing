@@ -19,11 +19,11 @@ class MazeGenerator:
         if dir == 2:
             return (8)
         if dir == 8:
-            return (2) 
+            return (2)
         if dir == 1:
             return (4)
         if dir == 4:
-            return (1) 
+            return (1)
 
     def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int, int]]:
         x, y = coord
@@ -65,14 +65,32 @@ class MazeGenerator:
         for i in range(logo_heigh):
             for j in range(logo_wid):
                 visited[start_x + i][start_y + j] = True
-                       
+
     def generate(self) -> None:
         visited: list[list[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
 
         self.add_logo_to_visited(visited)
         self.dfs(self.entry, visited)
 
-    def draw(self) -> None:
+    def draw(self, solution_path: list[str]) -> None:
+        # Convert directions into coordinates
+        solution_cells: set[tuple[int, int]] = set()
+
+        x, y = self.entry
+        solution_cells.add((x, y))
+
+        for direction in solution_path:
+            if direction == "N":
+                x -= 1
+            elif direction == "E":
+                y += 1
+            elif direction == "S":
+                x += 1
+            elif direction == "W":
+                y -= 1
+
+            solution_cells.add((x, y))
+
         logo = [
             [1,0,1,0,1,1,1],
             [1,0,1,0,0,0,1],
@@ -113,9 +131,9 @@ class MazeGenerator:
 
                 elif is_logo == True and logo[logo_x][logo_y] == 1:
                     content = " █ "
-
-                elif is_logo == True and logo[logo_x][logo_y] == 0:
-                    content = "   "
+                
+                elif (x, y) in solution_cells:
+                    content = " • "
 
                 else:
                     content = "   "
@@ -147,4 +165,3 @@ class MazeGenerator:
 
             print(row_top)
             print(row_bottom)
-

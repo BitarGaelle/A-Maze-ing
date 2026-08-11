@@ -29,7 +29,7 @@ class MazeSolver:
             x, y, _ = neigh
             if 0 > x or x >= self.height or 0 > y or y >= self.width:
                 continue
-            if self.visited[x][y] is True:
+            if self.visited[x][y]:
                 continue
             valid.append(neigh)
         return valid
@@ -57,6 +57,3 @@ class MazeSolver:
                 self.queue.append(coord)
                 self.visited[x][y] = True
                 self.parent[coord] = (cur, dir)
-            
-            
-            

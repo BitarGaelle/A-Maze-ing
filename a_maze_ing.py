@@ -17,9 +17,9 @@ def a_maze_ing():
         gen: MazeGenerator = MazeGenerator(dictionary)
         solv: MazeSolver = MazeSolver(gen)
         gen.generate()
-        gen.draw()
         path: list[str] = solv.solver()
         writer(dictionary, gen, path)
+        gen.draw(path)
 
     except Exception as e:
         print(e)
