@@ -40,7 +40,67 @@ class MazeGenerator:
                 continue
             valid.append(neigh)
         return valid
-        
+
+    def get_closed_walls(self, coord: tuple[int, int]) -> list[tuple[int, int, int]]:
+        """this is a docstring"""
+        x, y = coord
+        closed_walls: list[tuple[int, int, int]] = []
+        neighbors: list[tuple[int, int, int]] = []
+        visited_logo = [[False for _ in range(self.width)] for _ in range(self.height)]
+        self.add_logo_to_visited(visited_logo)
+
+        cell: int = self.grid[x][y]
+        if cell & 1 == 1:
+            neighbors.append((x-1, y, 1)) # N
+        if cell & 2 == 2:
+            neighbors.append((x, y+1, 2)) # E
+        if cell & 4 == 4:
+            neighbors.append((x+1, y, 4)) # S
+        if cell & 8 == 8:
+            neighbors.append((x, y-1, 8)) # W
+
+        for neigh in neighbors:
+            x, y, _ = neigh
+            if 0 > x or x >= self.height or 0 > y or y >= self.width:
+                continue
+            if visited_logo[x][y]:
+                continue
+            closed_walls.append(neigh)
+        return closed_walls
+
+    def solution_cells(self, solution_path: list[tuple[str]]) -> list[tuple[int, int]]:
+        solution_cells: list[tuple[int, int]] = []
+
+        x, y = self.entry
+        solution_cells.append((x, y))
+
+        for direction in solution_path:
+            if direction == "N":
+                x -= 1
+            elif direction == "E":
+                y += 1
+            elif direction == "S":
+                x += 1
+            elif direction == "W":
+                y -= 1
+
+            solution_cells.append((x, y))
+        return solution_cells
+
+    def make_imperfect(self, path: list[str]) -> None:
+        sol_cells: list[tuple[int, int]] = self.solution_cells(path)
+        counter: int = 0
+        for x, y in sol_cells:
+            if counter > 3:
+                counter = 0
+            if counter == 0:
+                closed_walls: tuple[int, int, int] = self.get_closed_walls((x,y))
+                if len(closed_walls) >= 1:
+                    neigh_x, neigh_y, dir = random.choice(closed_walls)
+                    self.grid[x][y] = self.grid[x][y] - dir
+                    self.grid[neigh_x][neigh_y] = self.grid[neigh_x][neigh_y] - self.get_oposite(dir)
+            counter += 1
+
     def dfs(self, coord: tuple[int, int], visited: list[list[bool]]) -> None:
         cur_x, cur_y = coord
         visited[cur_x][cur_y] = True
@@ -72,24 +132,11 @@ class MazeGenerator:
         random.seed(self.seed)
         self.dfs(self.entry, visited)
 
-    def draw(self, solution_path: list[str]) -> None:
+    def draw(self, solution_path: list[str], show: bool) -> None:
         # Convert directions into coordinates
-        solution_cells: set[tuple[int, int]] = set()
-
-        x, y = self.entry
-        solution_cells.add((x, y))
-
-        for direction in solution_path:
-            if direction == "N":
-                x -= 1
-            elif direction == "E":
-                y += 1
-            elif direction == "S":
-                x += 1
-            elif direction == "W":
-                y -= 1
-
-            solution_cells.add((x, y))
+        sol_cells: list[tuple[int, int]] = []
+        if show:
+            sol_cells = self.solution_cells(solution_path)
 
         logo = [
             [1,0,1,0,1,1,1],
@@ -131,8 +178,8 @@ class MazeGenerator:
 
                 elif is_logo == True and logo[logo_x][logo_y] == 1:
                     content = " █ "
-                
-                elif (x, y) in solution_cells:
+
+                elif (x, y) in sol_cells and show is True:
                     content = " • "
 
                 else:
@@ -165,3 +212,4 @@ class MazeGenerator:
 
             print(row_top)
             print(row_bottom)
+

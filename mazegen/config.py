@@ -18,10 +18,7 @@ def check_constraints(dictionary: dict[str, Any]) -> None:
             if (start_x <= x < start_x + 5 and 
                 start_y <= y < start_y + 7):
                     raise ValueError("Entry/Exit coordinates cannot be inside the 42 logo.")
-            
-            
 
-    print("All constraints verified!")
 
 def casting_value(key: str, value: str) -> Any:
     new_value: Any = value
@@ -47,27 +44,30 @@ def casting_value(key: str, value: str) -> Any:
 
 
 def parse_config(filename: str) -> dict[str, Any]:
-    with open (filename, "r") as f:
-        res_dict = {}
-        for line in f:
-            if line[0] == '#' or line[0] == '\n':
-                continue
-            else:
-                keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT", "SEED"]
-                res_arr = line.split("=")
-                if len(res_arr) == 2:
-                    key = res_arr[0].strip().upper()
-                    value = res_arr[1].strip()
-                    if (key in keys and key not in res_dict):
-                        res_dict[key] = casting_value(key, value)
-                    else:
-                        raise ValueError("Invalid/Duplicate key!")
-                    
+    try:
+        with open (filename, "r") as f:
+            res_dict = {}
+            for line in f:
+                if line[0] == '#' or line[0] == '\n':
+                    continue
                 else:
-                    raise ValueError("Wrong Config Syntax!")
-    mandatory = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
-    for item in mandatory:
-        if item not in res_dict.keys():
-            raise ValueError("Missing mandatory key!")
-    check_constraints(res_dict)
-    return (res_dict)
+                    keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT", "SEED"]
+                    res_arr = line.split("=")
+                    if len(res_arr) == 2:
+                        key = res_arr[0].strip().upper()
+                        value = res_arr[1].strip()
+                        if (key in keys and key not in res_dict):
+                            res_dict[key] = casting_value(key, value)
+                        else:
+                            raise ValueError("Invalid/Duplicate key!")
+                        
+                    else:
+                        raise ValueError("Wrong Config Syntax!")
+        mandatory = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
+        for item in mandatory:
+            if item not in res_dict.keys():
+                raise ValueError("Missing mandatory key!")
+        check_constraints(res_dict)
+        return (res_dict)
+    except FileNotFoundError:
+        print(f"Error-File {filename} not found")

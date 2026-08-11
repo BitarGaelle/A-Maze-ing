@@ -39,7 +39,6 @@ class MazeSolver:
 
         self.queue.append(self.start)
         self.visited[self.start[0]][self.start[1]] = True
-        self.maze.add_logo_to_visited(self.visited)
 
         while self.queue:
             cur: tuple[int, int] = self.queue.pop(0)

@@ -20,3 +20,4 @@ def writer(dictionary: dict[str, Any], maze: MazeGenerator, path: list[str]) -> 
         for dir in path:
             f.write(dir)
         f.write("\n")
+
