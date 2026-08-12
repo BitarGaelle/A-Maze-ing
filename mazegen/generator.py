@@ -1,8 +1,6 @@
 from typing import Any
 import random
-# 🐭  mouse (start)
-# 🧀  cheese (path)
-# 🧱(border) 🏁(goal) ⬜(white space)
+
 
 class MazeGenerator:
     def __init__(self, dictionary: dict[str, Any]):
@@ -140,84 +138,3 @@ class MazeGenerator:
         self.add_logo_to_visited(visited)
         random.seed(self.seed)
         self.dfs(self.entry, visited)
-
-    def draw(self, solution_path: list[str], show: bool) -> None:
-        sol_cells: list[tuple[int, int]] = []
-
-        if show:
-            sol_cells = self.solution_cells(solution_path)
-
-        logo = [
-            [1, 0, 0, 0, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 0, 1, 1, 1],
-            [0, 0, 1, 0, 1, 0, 0],
-            [0, 0, 1, 0, 1, 1, 1],
-        ]
-
-        logo_height = len(logo)
-        logo_width = len(logo[0])
-
-        start_x = (self.height - logo_height) // 2
-        start_y = (self.width - logo_width) // 2
-
-        print("█" + "████" * self.width)
-
-        for x in range(self.height):
-
-            row_top = "█"
-            row_bottom = "█"
-
-            for y in range(self.width):
-
-                cell = self.grid[x][y]
-
-                logo_x = x - start_x
-                logo_y = y - start_y
-
-                is_logo = (
-                    0 <= logo_x < logo_height
-                    and 0 <= logo_y < logo_width
-                )
-
-                # -------------------------
-                # Content
-                # -------------------------
-
-                if (x, y) == self.entry:
-                    content = " S "
-
-                elif (x, y) == self.exit:
-                    content = " E "
-
-                elif is_logo and logo[logo_x][logo_y] == 1:
-                    content = "███"
-
-                elif show and (x, y) in sol_cells:
-                    content = " • "
-
-                else:
-                    content = "   "
-
-                row_top += content
-
-                # -------------------------
-                # East wall
-                # -------------------------
-
-                if cell & 2:
-                    row_top += "█"
-                else:
-                    row_top += " "
-
-                # -------------------------
-                # South wall
-                # -------------------------
-
-                if cell & 4:
-                    row_bottom += "████"
-                else:
-                    row_bottom += "   █"
-
-            print(row_top)
-            print(row_bottom)

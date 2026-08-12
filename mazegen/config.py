@@ -1,19 +1,24 @@
 from typing import Any
 
+
 def check_constraints(dictionary: dict[str, Any]) -> None:
     for key, value in dictionary.items():
         if key in ("WIDTH", "HEIGHT"):
             if value <= 8:
-                raise ValueError("Width/Height must be greater than 9 for the logo to fit")
+                raise ValueError("Width/Height must be greater\
+than 9 for the logo to fit")
             elif value > 30:
-                raise ValueError("Width/Height must be less or equal than 30")
+                raise ValueError("Width/Height must be \
+less or equal than 30")
         elif key in ("ENTRY", "EXIT"):
             start_x = (dictionary["HEIGHT"] - 5) // 2
             start_y = (dictionary["WIDTH"] - 7) // 2
             x, y = value
             if dictionary["ENTRY"] == dictionary["EXIT"]:
-                raise ValueError("Entry and Exit's coordinates must be different.")
-            if 0 > x or x >= dictionary["HEIGHT"] or 0 > y or y >= dictionary["WIDTH"]:
+                raise ValueError("Entry and Exit's coordinates\
+must be different.")
+            if (0 > x or x >= dictionary["HEIGHT"] or
+                 0 > y or y >= dictionary["WIDTH"]):
                 raise ValueError("Out of bounds!")
             if (start_x <= x < start_x + 5 and 
                 start_y <= y < start_y + 7):

@@ -5,9 +5,11 @@ from solver import MazeSolver
 from typing import Any
 from writer import writer
 import random
+from draw import draw
 
 
-def a_maze_ing(regen: bool = False, show: bool = True):
+def a_maze_ing(regen: bool = False, show: bool = True,
+               color: str = "\033[0m", logo_color: str = "\033[31m"):
     try:
         av: list[str] = sys.argv
         ac: int = len(av)
@@ -29,7 +31,7 @@ def a_maze_ing(regen: bool = False, show: bool = True):
             solv2: MazeSolver = MazeSolver(gen)
             path = solv2.solver()
         writer(dictionary, gen, path)
-        gen.draw(path, show)
+        draw(gen, path, show, color, logo_color)
 
         print("=== A-Maze-ing ===")
         print("1. Re-generate a new maze")
@@ -40,17 +42,29 @@ def a_maze_ing(regen: bool = False, show: bool = True):
         if (choice < 1 and choice > 4):
             raise ValueError("choose a number between 1-4 please")
         if choice == 1:
-            a_maze_ing(True, show)
-            
-        if choice == 2:
-            a_maze_ing(False, not show)
+            a_maze_ing(True, show, color, logo_color)
 
-        # if choice == 3:
+        if choice == 2:
+            a_maze_ing(False, not show, color, logo_color)
+
+        if choice == 3:
+            CYAN: str = "\033[36m"
+            GREEN: str = "\033[32m"
+            RED: str = "\033[31m"
+            YELLOW: str = "\033[33m"
+            MAGENTA: str = "\033[35m"
+
+            colors = [CYAN, GREEN, RED, YELLOW, MAGENTA]
+            color_rand = random.Random()
+            color_content = color_rand.choice(colors)
+            logo_color = color_rand.choice(colors)
+            a_maze_ing(False, show, color_content, logo_color)
 
         if choice == 4:
-            exit()   
+            exit()
 
     except Exception as e:
         print(e)
+
 
 a_maze_ing()
