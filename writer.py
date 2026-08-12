@@ -1,7 +1,8 @@
 from mazegen.generator import MazeGenerator
 from typing import Any
 
-def writer(dictionary: dict[str, Any], maze: MazeGenerator, 
+
+def writer(dictionary: dict[str, Any], maze: MazeGenerator,
            path: list[str]) -> None:
     filename: str = dictionary["OUTPUT_FILE"]
     grid: list[list[int]] = maze.grid

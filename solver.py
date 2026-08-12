@@ -1,30 +1,33 @@
 from mazegen.generator import MazeGenerator
 
+
 class MazeSolver:
     def __init__(self, maze: MazeGenerator):
         self.maze = maze
-        self.queue: list[tuple[int,int]] = []
-        self.visited: list[list[bool]] = [[False for _ in range(maze.width)] for _ in range(maze.height)]
-        self.parent: dict[tuple[int,int], tuple[tuple[int,int], str]] = {}
+        self.queue: list[tuple[int, int]] = []
+        self.visited: list[list[bool]] = [[False for _ in range(maze.width)]
+                                          for _ in range(maze.height)]
+        self.parent: dict[tuple[int, int], tuple[tuple[int, int], str]] = {}
         self.start = maze.entry
         self.exit = maze.exit
         self.height = maze.height
         self.width = maze.width
 
-    def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int, str]]:
+    def get_neighbors(self,
+                      coord: tuple[int, int]) -> list[tuple[int, int, str]]:
         """this is a docstring"""
         x, y = coord
         valid: list[tuple[int, int, str]] = []
         neighbors: list[tuple[int, int, str]] = []
         cell: int = self.maze.grid[x][y]
         if cell & 1 == 0:
-            neighbors.append((x-1, y, "N")) # N
+            neighbors.append((x-1, y, "N"))  # N
         if cell & 2 == 0:
-            neighbors.append((x, y+1, "E")) # E
+            neighbors.append((x, y+1, "E"))  # E
         if cell & 4 == 0:
-            neighbors.append((x+1, y, "S")) # S
+            neighbors.append((x+1, y, "S"))  # S
         if cell & 8 == 0:
-            neighbors.append((x, y-1, "W")) # W
+            neighbors.append((x, y-1, "W"))  # W
 
         for neigh in neighbors:
             x, y, _ = neigh
@@ -34,7 +37,7 @@ class MazeSolver:
                 continue
             valid.append(neigh)
         return valid
-    
+
     def solver(self) -> list[str]:
 
         self.queue.append(self.start)
@@ -57,3 +60,4 @@ class MazeSolver:
                 self.queue.append(coord)
                 self.visited[x][y] = True
                 self.parent[coord] = (cur, dir)
+        return []

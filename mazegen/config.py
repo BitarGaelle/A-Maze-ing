@@ -17,12 +17,17 @@ less or equal than 30")
             if dictionary["ENTRY"] == dictionary["EXIT"]:
                 raise ValueError("Entry and Exit's coordinates\
 must be different.")
-            if (0 > x or x >= dictionary["HEIGHT"] or
-                 0 > y or y >= dictionary["WIDTH"]):
+            if (
+                0 > x or x >= dictionary["HEIGHT"] or
+                0 > y or y >= dictionary["WIDTH"]
+            ):
                 raise ValueError("Out of bounds!")
-            if (start_x <= x < start_x + 5 and 
-                start_y <= y < start_y + 7):
-                    raise ValueError("Entry/Exit coordinates cannot be inside the 42 logo.")
+            if (
+                start_x <= x < start_x + 5 and
+                start_y <= y < start_y + 7
+            ):
+                raise ValueError("Entry/Exit coordinates cannot\
+be inside the 42 logo.")
 
 
 def casting_value(key: str, value: str) -> Any:
@@ -50,13 +55,16 @@ def casting_value(key: str, value: str) -> Any:
 
 def parse_config(filename: str) -> dict[str, Any]:
     try:
-        with open (filename, "r") as f:
+        with open(filename, "r") as f:
             res_dict = {}
             for line in f:
                 if line[0] == '#' or line[0] == '\n':
                     continue
                 else:
-                    keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT", "SEED"]
+                    keys = [
+                        "WIDTH", "HEIGHT", "ENTRY", "EXIT",
+                        "OUTPUT_FILE", "PERFECT", "SEED"
+                    ]
                     res_arr = line.split("=")
                     if len(res_arr) == 2:
                         key = res_arr[0].strip().upper()
@@ -65,10 +73,12 @@ def parse_config(filename: str) -> dict[str, Any]:
                             res_dict[key] = casting_value(key, value)
                         else:
                             raise ValueError("Invalid/Duplicate key!")
-                        
+
                     else:
                         raise ValueError("Wrong Config Syntax!")
-        mandatory = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
+        mandatory = [
+            "WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"
+        ]
         for item in mandatory:
             if item not in res_dict.keys():
                 raise ValueError("Missing mandatory key!")
@@ -76,3 +86,4 @@ def parse_config(filename: str) -> dict[str, Any]:
         return (res_dict)
     except FileNotFoundError:
         print(f"Error-File {filename} not found")
+    return {}

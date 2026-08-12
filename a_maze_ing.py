@@ -9,7 +9,7 @@ from draw import draw
 
 
 def a_maze_ing(regen: bool = False, show: bool = True,
-               color: str = "\033[0m", logo_color: str = "\033[31m"):
+               color: str = "\033[0m", logo_color: str = "\033[31m") -> None:
     try:
         av: list[str] = sys.argv
         ac: int = len(av)

@@ -11,26 +11,28 @@ class MazeGenerator:
         self.output_file = dictionary["OUTPUT_FILE"]
         self.perfect = dictionary["PERFECT"]
         self.seed = dictionary.get("SEED", None)
-        self.grid = [[15 for _ in range(self.width)] for _ in range(self.height)]
+        self.grid = [[15 for _ in range(self.width)]
+                     for _ in range(self.height)]
 
-    def get_oposite(self, dir: int) -> int:
-        if dir == 2:
-            return (8)
-        if dir == 8:
-            return (2)
-        if dir == 1:
-            return (4)
-        if dir == 4:
-            return (1)
+    @staticmethod
+    def get_oposite(dir: int) -> int:
+        return {
+            1: 4,
+            2: 8,
+            4: 1,
+            8: 2
+        }[dir]
 
-    def get_neighbors(self, coord: tuple[int, int]) -> list[tuple[int, int, int]]:
+    def get_neighbors(
+        self, coord: tuple[int, int]
+    ) -> list[tuple[int, int, int]]:
         x, y = coord
         valid: list[tuple[int, int, int]] = []
         neighbors: list[tuple[int, int, int]] = []
-        neighbors.append((x-1, y, 1)) # N
-        neighbors.append((x, y+1, 2)) # E
-        neighbors.append((x+1, y, 4)) # S
-        neighbors.append((x, y-1, 8)) # W
+        neighbors.append((x-1, y, 1))  # N
+        neighbors.append((x, y+1, 2))  # E
+        neighbors.append((x+1, y, 4))  # S
+        neighbors.append((x, y-1, 8))  # W
 
         for neigh in neighbors:
             x, y, _ = neigh
@@ -39,23 +41,26 @@ class MazeGenerator:
             valid.append(neigh)
         return valid
 
-    def get_closed_walls(self, coord: tuple[int, int]) -> list[tuple[int, int, int]]:
+    def get_closed_walls(
+        self, coord: tuple[int, int]
+    ) -> list[tuple[int, int, int]]:
         """this is a docstring"""
         x, y = coord
         closed_walls: list[tuple[int, int, int]] = []
         neighbors: list[tuple[int, int, int]] = []
-        visited_logo = [[False for _ in range(self.width)] for _ in range(self.height)]
+        visited_logo = [[False for _ in range(self.width)]
+                        for _ in range(self.height)]
         self.add_logo_to_visited(visited_logo)
 
         cell: int = self.grid[x][y]
         if cell & 1 == 1:
-            neighbors.append((x-1, y, 1)) # N
+            neighbors.append((x-1, y, 1))  # N
         if cell & 2 == 2:
-            neighbors.append((x, y+1, 2)) # E
+            neighbors.append((x, y+1, 2))  # E
         if cell & 4 == 4:
-            neighbors.append((x+1, y, 4)) # S
+            neighbors.append((x+1, y, 4))  # S
         if cell & 8 == 8:
-            neighbors.append((x, y-1, 8)) # W
+            neighbors.append((x, y-1, 8))  # W
 
         for neigh in neighbors:
             x, y, _ = neigh
@@ -66,7 +71,9 @@ class MazeGenerator:
             closed_walls.append(neigh)
         return closed_walls
 
-    def solution_cells(self, solution_path: list[tuple[str]]) -> list[tuple[int, int]]:
+    def solution_cells(
+        self, solution_path: list[str]
+    ) -> list[tuple[int, int]]:
         solution_cells: list[tuple[int, int]] = []
 
         x, y = self.entry
@@ -92,11 +99,14 @@ class MazeGenerator:
             if counter > 3:
                 counter = 0
             if counter == 0:
-                closed_walls: tuple[int, int, int] = self.get_closed_walls((x,y))
+                closed_walls: list[tuple[int, int, int]] = self.get_closed_walls(
+                    (x, y)
+                )
                 if len(closed_walls) >= 1:
-                    neigh_x, neigh_y, dir = random.choice(closed_walls)
+                    n_x, n_y, dir = random.choice(closed_walls)
+                    oposite = self.get_oposite(dir)
                     self.grid[x][y] = self.grid[x][y] - dir
-                    self.grid[neigh_x][neigh_y] = self.grid[neigh_x][neigh_y] - self.get_oposite(dir)
+                    self.grid[n_x][n_y] = self.grid[n_x][n_y] - oposite
             counter += 1
 
     def dfs(self, coord: tuple[int, int], visited: list[list[bool]]) -> None:
@@ -108,9 +118,10 @@ class MazeGenerator:
 
         for neighbor in neighbors:
             neig_x, neig_y, direction = neighbor
+            oposite: int = self.get_oposite(direction)
             if visited[neig_x][neig_y] is False:
                 self.grid[cur_x][cur_y] = self.grid[cur_x][cur_y] - direction
-                self.grid[neig_x][neig_y] = self.grid[neig_x][neig_y] - self.get_oposite(direction)
+                self.grid[neig_x][neig_y] = self.grid[neig_x][neig_y] - oposite
                 self.dfs((neig_x, neig_y), visited)
 
     def add_logo_to_visited(self, visited: list[list[bool]]) -> None:
@@ -133,7 +144,8 @@ class MazeGenerator:
                     visited[start_x + i][start_y + j] = True
 
     def generate(self) -> None:
-        visited: list[list[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
+        visited: list[list[bool]] = [[False for _ in range(self.width)]
+                                     for _ in range(self.height)]
 
         self.add_logo_to_visited(visited)
         random.seed(self.seed)
