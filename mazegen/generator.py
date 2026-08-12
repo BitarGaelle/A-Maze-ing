@@ -116,8 +116,8 @@ class MazeGenerator:
                 self.dfs((neig_x, neig_y), visited)
 
     def add_logo_to_visited(self, visited: list[list[bool]]) -> None:
-        logo_wid: int = 7
-        logo_heigh: int = 5
+        logo_wid: int = 9
+        logo_heigh: int = 7
 
         start_x: int = (self.height - logo_heigh) // 2
         start_y: int = (self.width - logo_wid) // 2
@@ -133,17 +133,19 @@ class MazeGenerator:
         self.dfs(self.entry, visited)
 
     def draw(self, solution_path: list[str], show: bool) -> None:
-        # Convert directions into coordinates
         sol_cells: list[tuple[int, int]] = []
+
         if show:
             sol_cells = self.solution_cells(solution_path)
 
         logo = [
-            [1,0,1,0,1,1,1],
-            [1,0,1,0,0,0,1],
-            [1,1,1,0,1,1,1],
-            [0,0,1,0,1,0,0],
-            [0,0,1,0,1,1,1]
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 1, 0, 1, 1, 1, 0],
+            [0, 1, 0, 1, 0, 0, 0, 1, 0],
+            [0, 1, 1, 1, 0, 1, 1, 1, 0],
+            [0, 0, 0, 1, 0, 1, 0, 0, 0],
+            [0, 0, 0, 1, 0, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]
 
         logo_height = len(logo)
@@ -152,34 +154,39 @@ class MazeGenerator:
         start_x = (self.height - logo_height) // 2
         start_y = (self.width - logo_width) // 2
 
-        print("+" + "---+" * self.width)
+        print("█" + "████" * self.width)
 
         for x in range(self.height):
-            row_top = "|"
-            row_bottom = "+"
+
+            row_top = "█"
+            row_bottom = "█"
 
             for y in range(self.width):
+
                 cell = self.grid[x][y]
 
                 logo_x = x - start_x
                 logo_y = y - start_y
 
                 is_logo = (
-                    logo_x >= 0 and logo_x < logo_height and
-                    logo_y >= 0 and logo_y < logo_width
+                    0 <= logo_x < logo_height
+                    and 0 <= logo_y < logo_width
                 )
 
-                # content
+                # -------------------------
+                # Content
+                # -------------------------
+
                 if (x, y) == self.entry:
                     content = " S "
 
                 elif (x, y) == self.exit:
                     content = " E "
 
-                elif is_logo == True and logo[logo_x][logo_y] == 1:
-                    content = " █ "
+                elif is_logo and logo[logo_x][logo_y] == 1:
+                    content = "███"
 
-                elif (x, y) in sol_cells and show is True:
+                elif show and (x, y) in sol_cells:
                     content = " • "
 
                 else:
@@ -187,28 +194,49 @@ class MazeGenerator:
 
                 row_top += content
 
+                # -------------------------
                 # East wall
-                if is_logo == True:
+                # -------------------------
+
+                if is_logo:
+
+                    # Right border of logo
                     if logo_y == logo_width - 1:
-                        row_top += "|"
+                        row_top += "█"
+
+                    # Inside logo: hide maze walls
                     else:
                         row_top += " "
 
                 elif cell & 2:
-                    row_top += "|"
+                    row_top += "█"
 
                 else:
                     row_top += " "
 
+                # -------------------------
                 # South wall
-                if is_logo == True:
-                    row_bottom += "...+"
+                # -------------------------
+
+                if is_logo:
+
+                    # Bottom border of the logo
+                    if logo_x == logo_height - 1:
+                        row_bottom += "████"
+
+                    # Right border of the logo
+                    elif logo_y == logo_width - 1:
+                        row_bottom += "   █"
+
+                    # Inside the logo
+                    else:
+                        row_bottom += "    "
 
                 elif cell & 4:
-                    row_bottom += "---+"
+                    row_bottom += "████"
 
                 else:
-                    row_bottom += "   +"
+                    row_bottom += "   █"
 
             print(row_top)
             print(row_bottom)
