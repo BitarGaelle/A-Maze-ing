@@ -116,14 +116,23 @@ class MazeGenerator:
                 self.dfs((neig_x, neig_y), visited)
 
     def add_logo_to_visited(self, visited: list[list[bool]]) -> None:
-        logo_wid: int = 9
-        logo_heigh: int = 7
+        logo_wid: int = 7
+        logo_heigh: int = 5
+
+        logo = [
+            [1, 0, 0, 0, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 1, 0, 1, 1, 1],
+        ]
 
         start_x: int = (self.height - logo_heigh) // 2
         start_y: int = (self.width - logo_wid) // 2
         for i in range(logo_heigh):
             for j in range(logo_wid):
-                visited[start_x + i][start_y + j] = True
+                if logo[i][j] == 1:
+                    visited[start_x + i][start_y + j] = True
 
     def generate(self) -> None:
         visited: list[list[bool]] = [[False for _ in range(self.width)] for _ in range(self.height)]
@@ -139,13 +148,11 @@ class MazeGenerator:
             sol_cells = self.solution_cells(solution_path)
 
         logo = [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 1, 0, 1, 0, 1, 1, 1, 0],
-            [0, 1, 0, 1, 0, 0, 0, 1, 0],
-            [0, 1, 1, 1, 0, 1, 1, 1, 0],
-            [0, 0, 0, 1, 0, 1, 0, 0, 0],
-            [0, 0, 0, 1, 0, 1, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            [1, 0, 0, 0, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1],
+            [0, 0, 1, 0, 1, 0, 0],
+            [0, 0, 1, 0, 1, 1, 1],
         ]
 
         logo_height = len(logo)
@@ -198,19 +205,8 @@ class MazeGenerator:
                 # East wall
                 # -------------------------
 
-                if is_logo:
-
-                    # Right border of logo
-                    if logo_y == logo_width - 1:
-                        row_top += "█"
-
-                    # Inside logo: hide maze walls
-                    else:
-                        row_top += " "
-
-                elif cell & 2:
+                if cell & 2:
                     row_top += "█"
-
                 else:
                     row_top += " "
 
@@ -218,26 +214,10 @@ class MazeGenerator:
                 # South wall
                 # -------------------------
 
-                if is_logo:
-
-                    # Bottom border of the logo
-                    if logo_x == logo_height - 1:
-                        row_bottom += "████"
-
-                    # Right border of the logo
-                    elif logo_y == logo_width - 1:
-                        row_bottom += "   █"
-
-                    # Inside the logo
-                    else:
-                        row_bottom += "    "
-
-                elif cell & 4:
+                if cell & 4:
                     row_bottom += "████"
-
                 else:
                     row_bottom += "   █"
 
             print(row_top)
             print(row_bottom)
-
