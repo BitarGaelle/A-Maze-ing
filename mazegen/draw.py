@@ -1,9 +1,30 @@
 from mazegen import MazeGenerator
 
 
-def draw(maze: MazeGenerator, solution_path: list[str],
-         show: bool, color: str, logo_color: str) -> None:
+def draw(
+    maze: MazeGenerator,
+    solution_path: list[str],
+    show: bool,
+    color: str,
+    logo_color: str
+) -> None:
+    """
+    Display the maze in the terminal using Unicode block characters.
+
+    The maze walls, 42 logo, entry, exit, and optionally the solution
+    path are displayed with their respective colors.
+
+    Args:
+        maze: MazeGenerator instance containing the generated maze,
+            its dimensions, grid, entry, and exit.
+        solution_path: List of directions representing the solution path.
+            Used to determine which cells belong to the solution.
+        show: Whether to display the solution path.
+        color: ANSI color code used for the maze walls.
+        logo_color: ANSI color code used for the 42 logo.
+    """
     RESET: str = "\033[0m"
+
     sol_cells: list[tuple[int, int]] = []
 
     if show:
@@ -26,12 +47,10 @@ def draw(maze: MazeGenerator, solution_path: list[str],
     print(f"{color}█{RESET}" + f"{color}████{RESET}" * maze.width)
 
     for x in range(maze.height):
-
         row_top = f"{color}█{RESET}"
         row_bottom = f"{color}█{RESET}"
 
         for y in range(maze.width):
-
             cell = maze.grid[x][y]
 
             logo_x = x - start_x
@@ -42,40 +61,27 @@ def draw(maze: MazeGenerator, solution_path: list[str],
                 and 0 <= logo_y < logo_width
             )
 
-            # -------------------------
             # Content
-            # -------------------------
-
             if (x, y) == maze.entry:
                 content = "🐭 "
-
             elif (x, y) == maze.exit:
                 content = " 🧀"
-
             elif is_logo and logo[logo_x][logo_y] == 1:
                 content = f"{logo_color}███{RESET}"
-
             elif show and (x, y) in sol_cells:
                 content = " • "
-
             else:
                 content = "   "
 
             row_top += content
 
-            # -------------------------
             # East wall
-            # -------------------------
-
             if cell & 2:
                 row_top += f"{color}█{RESET}"
             else:
                 row_top += " "
 
-            # -------------------------
             # South wall
-            # -------------------------
-
             if cell & 4:
                 row_bottom += f"{color}████{RESET}"
             else:

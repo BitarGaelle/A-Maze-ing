@@ -108,14 +108,15 @@ gen.generate()
 
 ### Custom parameters
 ```python
-gen = MazeGenerator(
-    width=30,
-    height=20,
-    seed=1337,       # Reproducible output
-    perfect=False,   # Allow multiple paths
-    entry=(0, 0),
-    exit=(29, 19),
-)
+config: dict[str, Any] = {
+    "WIDTH": 30,
+    "HEIGHT": 20,
+    "SEED": 1337,
+    "PERFECT": False,
+    "ENTRY": (0, 0),
+    "EXIT": (19, 29),
+}
+gen = MazeGenerator(config)
 gen.generate()
 ```
 
@@ -136,7 +137,7 @@ python -m build
 - **Bitmask wall encoding** using hexadecimal digits (N/E/S/W per cell)
 - **BFS** for computing the shortest path between entry and exit
 - **Configuration file parsing** with graceful error handling
-- **Terminal ASCII rendering** and/or **MiniLibX graphical display**
+- **Terminal ASCII rendering** 
 - **Reusable Python packaging** with `pyproject.toml` and pip-installable wheels
 - **Type hints**, **docstrings** (PEP 257), and **flake8 / mypy** compliance
 
