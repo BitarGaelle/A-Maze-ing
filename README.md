@@ -99,15 +99,6 @@ pip install mazegen-1.0.0-py3-none-any.whl
 ```python
 from mazegen import MazeGenerator
 
-# Instantiate with size and optional seed
-gen = MazeGenerator(width=20, height=15, seed=42, perfect=True)
-
-# Generate the maze
-gen.generate()
-```
-
-### Custom parameters
-```python
 config: dict[str, Any] = {
     "WIDTH": 30,
     "HEIGHT": 20,
@@ -119,8 +110,6 @@ config: dict[str, Any] = {
 gen = MazeGenerator(config)
 gen.generate()
 ```
-
-> Note: The internal grid format (`gen.grid`) is not necessarily identical to the hexadecimal output file format.
 
 To rebuild the package from source:
 ```bash
@@ -137,7 +126,7 @@ python -m build
 - **Bitmask wall encoding** using hexadecimal digits (N/E/S/W per cell)
 - **BFS** for computing the shortest path between entry and exit
 - **Configuration file parsing** with graceful error handling
-- **Terminal ASCII rendering** 
+- **Terminal ASCII rendering**
 - **Reusable Python packaging** with `pyproject.toml` and pip-installable wheels
 - **Type hints**, **docstrings** (PEP 257), and **flake8 / mypy** compliance
 
@@ -156,24 +145,6 @@ The shortest path is found with BFS (unweighted grid) and encoded as a sequence 
 
 ### Packaging
 The `MazeGenerator` class lives in a standalone module with a `pyproject.toml`. Running `python -m build` produces a `.whl` and a `.tar.gz` that can be installed via `pip install` in any virtualenv.
-
----
-
-## Project File Tree
-
-```
-.
-|-- a_maze_ing.py          # Main entry point
-|-- config.txt             # Default configuration file
-|-- mazegen/               # Reusable package source
-|   |-- __init__.py
-|   └── generator.py
-|-- pyproject.toml         # Package build config
-|-- mazegen-1.0.0-py3-none-any.whl   # Pre-built wheel
-|-- Makefile
-|-- requirements.txt
-└── .gitignore
-```
 
 ---
 
