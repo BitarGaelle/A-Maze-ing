@@ -1,5 +1,8 @@
 .PHONY: install run debug clean lint lint-strict
 
+build:
+	python3 -m build
+
 install:
 	pip install -r requirements.txt
 

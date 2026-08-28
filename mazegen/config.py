@@ -18,19 +18,30 @@ def check_constraints(dictionary: dict[str, Any]) -> None:
     """
     for key, value in dictionary.items():
 
-        if key in ("WIDTH", "HEIGHT"):
+        if key == "WIDTH":
 
-            if value <= 8:
-                raise ValueError("Width/Height must be greater\n"
-                                 "than 9 for the logo to fit")
-            elif value > 30:
-                raise ValueError("Width/Height must be \n"
-                                 "less or equal than 30")
+            if value < 7:
+                raise ValueError("Width must be greater\n"
+                                 "than 7 for the logo to fit")
+        if key == "HEIGHT":
+
+            if value < 5:
+                raise ValueError("Height must be greater\n"
+                                 "than 5 for the logo to fit")
 
         elif key in ("ENTRY", "EXIT"):
 
-            start_x = (dictionary["HEIGHT"] - 5) // 2
-            start_y = (dictionary["WIDTH"] - 7) // 2
+            s_x = (dictionary["HEIGHT"] - 5) // 2
+            s_y = (dictionary["WIDTH"] - 7) // 2
+            logo_coord: list[tuple[int, int]] = [
+                (s_x, s_y), (s_x - 1, s_y), (s_x - 2, s_y),
+                (s_x - 2, s_y + 1), (s_x - 2, s_y + 2), (s_x - 3, s_y + 2),
+                (s_x - 4, s_y + 2), (s_x, s_y + 4), (s_x, s_y + 5),
+                (s_x, s_y + 6),
+                (s_x - 1, s_y + 6), (s_x - 2, s_y + 6), (s_x - 2, s_y + 5),
+                (s_x - 2, s_y + 4), (s_x - 3, s_y + 4), (s_x - 4, s_y + 4),
+                (s_x - 4, s_y + 5), (s_x - 4, s_y + 6)
+            ]
 
             x, y = value
 
@@ -44,10 +55,7 @@ def check_constraints(dictionary: dict[str, Any]) -> None:
             ):
                 raise ValueError("Out of bounds!")
 
-            if (
-                start_x <= x < start_x + 5
-                and start_y <= y < start_y + 7
-            ):
+            if (x, y) in logo_coord:
                 raise ValueError("Entry/Exit coordinates cannot\n"
                                  "be inside the 42 logo.")
 
@@ -92,12 +100,14 @@ def casting_value(key: str, value: str) -> Any:
 
         if not new_value.strip():
             raise ValueError("OUTPUT_FILE cannot be empty!")
+        if new_value.strip() == "config.txt":
+            raise ValueError(f"Cannot use '{new_value}' as Output!")
 
     elif key == "PERFECT":
 
-        if value == "True":
+        if value.capitalize() == "True":
             new_value = True
-        elif value == "False":
+        elif value.capitalize() == "False":
             new_value = False
         else:
             raise ValueError(
